@@ -22,7 +22,7 @@
             width: 90%;
             max-width: 800px;
         }
-        h1 {
+        h1, h2 {
             color: #333;
             text-align: center;
             margin-bottom: 25px;
@@ -82,6 +82,13 @@
             border-radius: 4px;
             white-space: pre-wrap;
         }
+        .buttons-row {
+            display: flex;
+            gap: 16px;
+        }
+        .buttons-row button {
+            width: calc(25% - 12px);
+        }
     </style>
 </head>
 <body>
@@ -98,6 +105,13 @@
             <button id="cleanButton">Удалить все теги</button>
             <button id="cleanEmptyButton">Удалить только пустые теги</button>
             <button id="wrapBrButton">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt; (эксперимент)</button>
+            <h2>Убрать атрибуты:</h2>
+            <div class="buttons-row">
+                <button id="removeClassBtn">class</button>
+                <button id="removeIdBtn">id</button>
+                <button id="removeDataBtn">data-*</button>
+                <button id="removeStyleBtn">style</button>
+            </div>
         </div>
             
         <div>
@@ -179,11 +193,38 @@
             return tempDiv.innerHTML;
         }
 
+        function removeAttributes(htmlString, type) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+            
+            const allElements = tempDiv.querySelectorAll('*');
+        
+            allElements.forEach(el => {
+                if (type === 'data') {
+                    const attrs = Array.from(el.attributes);
+                    attrs.forEach(attr => {
+                        if (attr.name.startsWith('data-')) {
+                            el.removeAttribute(attr.name);
+                        }
+                    });
+                } else {
+                    el.removeAttribute(type);
+                }
+            });
+        
+            return tempDiv.innerHTML;
+        }
+
         const inputTextArea = document.getElementById('inputHtml');
         const outputTextArea = document.getElementById('outputCleaned');
         const cleanButton = document.getElementById('cleanButton');
         const cleanEmptyButton = document.getElementById('cleanEmptyButton');
         const wrapBrButton = document.getElementById('wrapBrButton');
+        
+        const removeClassBtn = document.getElementById('removeClassBtn');
+        const removeIdBtn = document.getElementById('removeIdBtn');
+        const removeDataBtn = document.getElementById('removeDataBtn');
+        const removeStyleBtn = document.getElementById('removeStyleBtn');
 
         cleanButton.addEventListener('click', function() {
             const htmlInput = inputTextArea.value;
@@ -198,6 +239,26 @@
         wrapBrButton.addEventListener('click', function() {
             const currentHtml = getCurrentText();
             outputTextArea.value = wrapBrWithP(currentHtml);
+        });
+
+        removeClassBtn.addEventListener('click', function() {
+            const currentHtml = getCurrentText();
+            outputTextArea.value = removeAttributes(currentHtml, 'class');
+        });
+        
+        removeIdBtn.addEventListener('click', function() {
+            const currentHtml = getCurrentText();
+            outputTextArea.value = removeAttributes(currentHtml, 'id');
+        });
+        
+        removeDataBtn.addEventListener('click', function() {
+            const currentHtml = getCurrentText();
+            outputTextArea.value = removeAttributes(currentHtml, 'data');
+        });
+        
+        removeStyleBtn.addEventListener('click', function() {
+            const currentHtml = getCurrentText();
+            outputTextArea.value = removeAttributes(currentHtml, 'style');
         });
     </script>
 
