@@ -43,6 +43,11 @@
             font-size: 1em;
             resize: vertical;
         }
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
         button {
             display: block;
             width: 100%;
@@ -77,10 +82,13 @@
             <textarea id="inputHtml" rows="10" placeholder="Вставьте сюда ваш HTML-текст..."></textarea>
         </div>
 
-        <button id="cleanButton">Очистить текст</button>
-
+        <div class="buttons">
+            <button id="cleanButton">Очистить текст</button>
+            <button id="cleanEmptyButton">Удалить только пустые &lt;span&gt; и &lt;p&gt;</button>
+        </div>
+            
         <div>
-            <label for="outputCleaned">Очищенный текст (без тегов и переносов строк):</label>
+            <label for="outputCleaned">Результат:</label>
             <textarea id="outputCleaned" rows="10" readonly placeholder="Здесь появится очищенный текст..."></textarea>
         </div>
     </div>
@@ -97,15 +105,33 @@
             return plainText;
         }
 
+        function removeEmptySpanAndP(htmlString) {
+            const regex = /<(p|span)[^>]*>\s*(?:&nbsp;)*\s*<\/\1>/gi;            
+            let result = htmlString;
+            let previousResult;
+
+            do {
+                previousResult = result;
+                result = result.replace(regex, '');
+            } while (result !== previousResult);
+
+            return result.trim();
+        }
+
         const inputTextArea = document.getElementById('inputHtml');
         const outputTextArea = document.getElementById('outputCleaned');
         const cleanButton = document.getElementById('cleanButton');
+        const cleanEmptyButton = document.getElementById('cleanEmptyButton');
 
         cleanButton.addEventListener('click', function() {
             const htmlInput = inputTextArea.value;
-            const cleanedResult = stripHtmlAndNewlines(htmlInput);
-            outputTextArea.value = cleanedResult;
-        });      
+            outputTextArea.value = stripHtmlAndNewlines(htmlInput);
+        });
+
+        cleanEmptyButton.addEventListener('click', function() {
+            const htmlInput = inputTextArea.value;
+            outputTextArea.value = removeEmptySpanAndP(htmlInput);
+        });           
     </script>
 
 </body>
