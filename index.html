@@ -244,10 +244,15 @@
 		    return tempDiv.innerHTML;
 		}
 
+		function removeComments(htmlString) {
+		    return htmlString.replace(/<!--[\s\S]*?-->/g, '');
+		}
+
 		function makeBeautiful() {
 		    let text = getCurrentText();
 		    
 		    text = removeScripts(text);
+			text = removeComments(text);
 			text = removeAttributes(text, ['class', 'id', 'data', 'style', 'events']);
 			text = wrapBrWithP(text);
 		    text = removeEmptySpanAndP(text);
