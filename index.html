@@ -31,7 +31,7 @@
         }
         h2 {
             margin-top: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
         label {
             display: block;
@@ -63,15 +63,16 @@
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 1.1em;
+            font-size: 1em;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         #cleanButton {
             background-color: #d23a3a;
         }
-        #cleanEmptyButton {
+        button.green {
             background-color: #38a93d;
+            height:  60px;
         }
         button:hover {
             background-color: #0056b3;
@@ -79,7 +80,7 @@
         #cleanButton:hover {
             background-color: #a42f2f;
         }
-        #cleanEmptyButton:hover {
+        button.green:hover {
             background-color: #2e8032;
         }
         pre {
@@ -95,6 +96,13 @@
         .buttons-row button {
             width: calc(20% - 12px);
         }
+        .buttons-row-3-items {
+    		display: flex;
+            gap: 15px;
+        }
+        .buttons-row-3-items button {
+            width: calc(33.3% - 10px);
+        }
     </style>
 </head>
 <body>
@@ -109,8 +117,12 @@
 
         <div class="buttons">
             <button id="cleanButton">Удалить все теги</button>
-            <button id="cleanEmptyButton">Удалить только пустые теги</button>
-            <button id="wrapBrButton">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt; (эксперимент)</button>
+            <button id="makeBeautifulBtn" class="green">СДЕЛАТЬ КРАСИВО (удалить всё ненужное, для чужого html)</button>
+            <div class="buttons-row-3-items">
+	            <button id="cleanEmptyButton">Удалить пустые теги</button>
+				<button id="removeScriptsBtn">Удалить скрипты</button>
+				<button id="wrapBrButton">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt;</button>
+            </div>
             <h2>Убрать атрибуты:</h2>
             <div class="buttons-row">
                 <button id="removeClassBtn">class</button>
@@ -128,6 +140,9 @@
     </div>
 
     <script>
+        const inputTextArea = document.getElementById('inputHtml');
+        const outputTextArea = document.getElementById('outputCleaned');
+
         function getCurrentText() {
             return outputTextArea.value.trim() !== "" ? outputTextArea.value : inputTextArea.value;
         }
@@ -155,6 +170,11 @@
 
             return result.trim();
         }
+
+        function removeScripts(htmlString) {
+		    const regex = /<script\b[^>]*>([\s\S]*?)<\/script>/gmi;
+		    return htmlString.replace(regex, '');
+		}
 
         function wrapBrWithP(htmlString) {
             const tempDiv = document.createElement('div');
@@ -200,80 +220,71 @@
             return tempDiv.innerHTML;
         }
 
-        function removeAttributes(htmlString, type) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = htmlString;
-            const allElements = tempDiv.querySelectorAll('*');
-        
-            allElements.forEach(el => {
-                const attrs = Array.from(el.attributes);
-                attrs.forEach(attr => {
-                    if (type === 'data' && attr.name.startsWith('data-')) {
-                        el.removeAttribute(attr.name);
-                    } 
-                    else if (type === 'events' && attr.name.startsWith('on')) {
-                        el.removeAttribute(attr.name);
-                    } 
-                    else if (attr.name === type) {
-                        el.removeAttribute(type);
-                    }
-                });
-            });
-        
-            return tempDiv.innerHTML;
-        }
+        function removeAttributes(htmlString, types) {
+		    if (!Array.isArray(types)) types = [types];
+		    
+		    const tempDiv = document.createElement('div');
+		    tempDiv.innerHTML = htmlString;
+		    const allElements = tempDiv.querySelectorAll('*');
 
-        const inputTextArea = document.getElementById('inputHtml');
-        const outputTextArea = document.getElementById('outputCleaned');
-        const cleanButton = document.getElementById('cleanButton');
-        const cleanEmptyButton = document.getElementById('cleanEmptyButton');
-        const wrapBrButton = document.getElementById('wrapBrButton');
-        
-        const removeClassBtn = document.getElementById('removeClassBtn');
-        const removeIdBtn = document.getElementById('removeIdBtn');
-        const removeDataBtn = document.getElementById('removeDataBtn');
-        const removeStyleBtn = document.getElementById('removeStyleBtn');
-        const removeEventsBtn = document.getElementById('removeEventsBtn');
+		    allElements.forEach(el => {
+		        const attrs = Array.from(el.attributes);
+		        attrs.forEach(attr => {
+		            const name = attr.name;
+		            types.forEach(type => {
+		                if (type === 'data' && name.startsWith('data-')) el.removeAttribute(name);
+		                else if (type === 'events' && name.startsWith('on')) el.removeAttribute(name);
+		                else if (name === type) el.removeAttribute(name);
+		            });
+		        });
+		    });
+		    return tempDiv.innerHTML;
+		}
 
-        cleanButton.addEventListener('click', function() {
-            const htmlInput = inputTextArea.value;
-            outputTextArea.value = stripHtmlAndNewlines(htmlInput);
-        });
+		function makeBeautiful() {
+		    let text = getCurrentText();
+		    
+		    text = removeScripts(text);
+		    text = removeEmptySpanAndP(text);
+		    text = wrapBrWithP(text);
+		    text = removeAttributes(text, ['class', 'id', 'data', 'style', 'events']);
+		    
+		    outputTextArea.value = text;
+		}
 
-        cleanEmptyButton.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeEmptySpanAndP(currentHtml);
-        });    
 
-        wrapBrButton.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = wrapBrWithP(currentHtml);
-        });
+        document.getElementById('cleanButton').addEventListener('click', () => {
+		    outputTextArea.value = stripHtmlAndNewlines(inputTextArea.value);
+		});
 
-        removeClassBtn.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeAttributes(currentHtml, 'class');
-        });
-        
-        removeIdBtn.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeAttributes(currentHtml, 'id');
-        });
-        
-        removeDataBtn.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeAttributes(currentHtml, 'data');
-        });
-        
-        removeStyleBtn.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeAttributes(currentHtml, 'style');
-        });
+		document.getElementById('removeScriptsBtn').addEventListener('click', () => {
+		    outputTextArea.value = removeScripts(getCurrentText());
+		});
 
-        removeEventsBtn.addEventListener('click', function() {
-            const currentHtml = getCurrentText();
-            outputTextArea.value = removeAttributes(currentHtml, 'events');
-        });
+		document.getElementById('cleanEmptyButton').addEventListener('click', () => {
+		    outputTextArea.value = removeEmptySpanAndP(getCurrentText());
+		});
+
+		document.getElementById('wrapBrButton').addEventListener('click', () => {
+		    outputTextArea.value = wrapBrWithP(getCurrentText());
+		});
+
+		document.getElementById('makeBeautifulBtn').addEventListener('click', makeBeautiful);
+
+		const attrMap = {
+		    'removeClassBtn': 'class',
+		    'removeIdBtn': 'id',
+		    'removeDataBtn': 'data',
+		    'removeStyleBtn': 'style',
+		    'removeEventsBtn': 'events'
+		};
+
+		Object.entries(attrMap).forEach(([id, type]) => {
+		    const btn = document.getElementById(id);
+		    if(btn) btn.addEventListener('click', () => {
+		        outputTextArea.value = removeAttributes(getCurrentText(), type);
+		    });
+		});
     </script>
 
 </body>
