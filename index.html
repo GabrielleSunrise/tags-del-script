@@ -288,6 +288,10 @@
 		        outputTextArea.value = removeAttributes(getCurrentText(), type);
 		    });
 		});
+
+		inputTextArea.addEventListener('input', () => {
+		    outputTextArea.value = '';
+		});
     </script>
 
 </body>
