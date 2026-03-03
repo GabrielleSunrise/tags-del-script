@@ -95,6 +95,10 @@
     </div>
 
     <script>
+        function getCurrentText() {
+            return outputTextArea.value.trim() !== "" ? outputTextArea.value : inputTextArea.value;
+        }
+        
         function stripHtmlAndNewlines(htmlString) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = htmlString;
@@ -175,13 +179,13 @@
         });
 
         cleanEmptyButton.addEventListener('click', function() {
-            const htmlInput = inputTextArea.value;
-            outputTextArea.value = removeEmptySpanAndP(htmlInput);
+            const currentHtml = getCurrentText();
+            outputTextArea.value = removeEmptySpanAndP(currentHtml);
         });    
 
         wrapBrButton.addEventListener('click', function() {
-            const htmlInput = inputTextArea.value;
-            outputTextArea.value = wrapBrWithP(htmlInput);
+            const currentHtml = getCurrentText();
+            outputTextArea.value = wrapBrWithP(currentHtml);
         });
     </script>
 
