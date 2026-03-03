@@ -84,7 +84,8 @@
 
         <div class="buttons">
             <button id="cleanButton">Очистить текст</button>
-            <button id="cleanEmptyButton">Удалить только пустые &lt;span&gt; и &lt;p&gt;</button>
+            <button id="cleanEmptyButton">Удалить только пустые теги</button>
+            <button id="wrapBrButton">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt;</button>
         </div>
             
         <div>
@@ -106,7 +107,7 @@
         }
 
         function removeEmptySpanAndP(htmlString) {
-            const regex = /<(p|span)[^>]*>\s*(?:&nbsp;)*\s*<\/\1>/gi;            
+            const regex = /<(p|span|div)[^>]*>\s*(?:&nbsp;)*\s*<\/\1>/gi;            
             let result = htmlString;
             let previousResult;
 
@@ -118,10 +119,55 @@
             return result.trim();
         }
 
+        function wrapBrWithP(htmlString) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlString;
+        
+            const nodes = Array.from(tempDiv.childNodes);
+            let buffer = [];
+        
+            const blockTags = ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'SECTION'];
+        
+            const flush = () => {
+                if (buffer.length === 0) return;
+                
+                const hasContent = buffer.some(node => 
+                    node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "")
+                );
+        
+                if (hasContent) {
+                    const p = document.createElement('p');
+                    tempDiv.insertBefore(p, buffer[0]);
+                    buffer.forEach(node => p.appendChild(node));
+                }
+                buffer = [];
+            };
+        
+            nodes.forEach(node => {
+                if (node.nodeName === 'BR') {
+                    const prev = node.previousSibling;
+                    if (!prev || prev.nodeType !== Node.ELEMENT_NODE) {
+                        flush();
+                        node.remove();
+                    } else {
+                        flush();
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName)) {
+                    flush();
+                } else {
+                    buffer.push(node);
+                }
+            });
+        
+            flush();
+            return tempDiv.innerHTML;
+        }
+
         const inputTextArea = document.getElementById('inputHtml');
         const outputTextArea = document.getElementById('outputCleaned');
         const cleanButton = document.getElementById('cleanButton');
         const cleanEmptyButton = document.getElementById('cleanEmptyButton');
+        const wrapBrButton = document.getElementById('wrapBrButton');
 
         cleanButton.addEventListener('click', function() {
             const htmlInput = inputTextArea.value;
@@ -131,7 +177,12 @@
         cleanEmptyButton.addEventListener('click', function() {
             const htmlInput = inputTextArea.value;
             outputTextArea.value = removeEmptySpanAndP(htmlInput);
-        });           
+        });    
+
+        wrapBrButton.addEventListener('click', function() {
+            const htmlInput = inputTextArea.value;
+            outputTextArea.value = wrapBrWithP(htmlInput);
+        });
     </script>
 
 </body>
