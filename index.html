@@ -183,38 +183,41 @@
             const nodes = Array.from(tempDiv.childNodes);
             let buffer = [];
         
-            const blockTags = ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'SECTION'];
+            const blockTags = [
+		        'DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 
+		        'UL', 'OL', 'LI', 'BLOCKQUOTE', 'SECTION', 
+		        'TABLE', 'TBODY', 'TR', 'TD', 'THEAD', 'TH', 'ARTICLE', 'ASIDE'
+		    ];
         
             const flush = () => {
-                if (buffer.length === 0) return;
-                
-                const hasContent = buffer.some(node => 
-                    node.nodeType === Node.ELEMENT_NODE || (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "")
-                );
-        
-                if (hasContent) {
-                    const p = document.createElement('p');
-                    tempDiv.insertBefore(p, buffer[0]);
-                    buffer.forEach(node => p.appendChild(node));
-                }
-                buffer = [];
-            };
+		        if (buffer.length === 0) return;
+		        const hasActualContent = buffer.some(node => {
+		            return (node.nodeType === Node.ELEMENT_NODE) || 
+		                   (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
+		        });
+		
+		        if (hasActualContent) {
+		            const p = document.createElement('p');
+		            const containsBlock = buffer.some(node => node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName));
+		            
+		            if (!containsBlock) {
+		                tempDiv.insertBefore(p, buffer[0]);
+		                buffer.forEach(node => p.appendChild(node));
+		            }
+		        }
+		        buffer = [];
+		    };
         
             nodes.forEach(node => {
-                if (node.nodeName === 'BR') {
-                    const prev = node.previousSibling;
-                    if (!prev || prev.nodeType !== Node.ELEMENT_NODE) {
-                        flush();
-                        node.remove();
-                    } else {
-                        flush();
-                    }
-                } else if (node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName)) {
-                    flush();
-                } else {
-                    buffer.push(node);
-                }
-            });
+		        if (node.nodeName === 'BR') {
+		            flush();
+		            node.remove();
+		        } else if (node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName)) {
+		            flush();
+		        } else {
+		            buffer.push(node);
+		        }
+		    });
         
             flush();
             return tempDiv.innerHTML;
@@ -245,9 +248,9 @@
 		    let text = getCurrentText();
 		    
 		    text = removeScripts(text);
+			text = removeAttributes(text, ['class', 'id', 'data', 'style', 'events']);
+			text = wrapBrWithP(text);
 		    text = removeEmptySpanAndP(text);
-		    text = wrapBrWithP(text);
-		    text = removeAttributes(text, ['class', 'id', 'data', 'style', 'events']);
 		    
 		    outputTextArea.value = text;
 		}
