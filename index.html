@@ -136,6 +136,7 @@
         <div>
             <label for="outputCleaned">Результат:</label>
             <textarea id="outputCleaned" rows="10" readonly placeholder="Здесь появится очищенный текст..."></textarea>
+			<button onclick="copyToClipboard('outputCleaned', this)">Копировать</button>
         </div>
     </div>
 
@@ -297,6 +298,25 @@
 		inputTextArea.addEventListener('input', () => {
 		    outputTextArea.value = '';
 		});
+
+		function copyToClipboard(elementId, btn) {
+	        const textArea = document.getElementById(elementId);
+	        
+	        navigator.clipboard.writeText(textArea.value).then(() => {
+	            const originalText = btn.innerText;
+	            btn.innerText = 'Скопировано';
+	            btn.style.backgroundColor = '#2ecc71';
+	            btn.style.color = '#fff';
+	
+	            setTimeout(() => {
+	                btn.innerText = originalText;
+	                btn.style.backgroundColor = '';
+	                btn.style.color = '';
+	            }, 2000);
+	        }).catch(err => {
+	            console.error('Ошибка при копировании: ', err);
+	        });
+	    }
     </script>
 
 </body>
