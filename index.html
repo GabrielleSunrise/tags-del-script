@@ -4,105 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Очиститель HTML-тегов</title>
-	<link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3751d4;
+            --secondary-bg: #f8f9fa;
+            --secondary-hover: #e9ecef;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dee2e6;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
         .container {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 90%;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            width: 100%;
             max-width: 800px;
         }
-        h1, h2 {
-            color: #333;
-            text-align: center;            
-        }
+
         h1 {
-            margin-bottom: 25px;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
         }
-        h2 {
-            margin-top: 10px;
-            margin-bottom: 6px;
-        }
+
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
         }
+
         textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1em;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
             resize: vertical;
+            box-sizing: border-box;
+            background: #fcfcfc;
+            margin-bottom: 20px;
+            transition: all 0.2s;
         }
-        .buttons {
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .btn-stack {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
-        button {
-            display: block;
-            width: 100%;
-            padding: 12px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+
+        .btn-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
         }
-        #cleanButton {
-            background-color: #d23a3a;
-        }
-        button.green {
-            background-color: #38a93d;
-            height:  60px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #cleanButton:hover {
-            background-color: #a42f2f;
-        }
-        button.green:hover {
-            background-color: #2e8032;
-        }
-        pre {
-            background-color: #e9e9e9;
-            padding: 10px;
-            border-radius: 4px;
-            white-space: pre-wrap;
-        }
-        .buttons-row {
+
+        .attr-group {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
         }
-        .buttons-row button {
-            width: calc(20% - 12px);
+
+        button {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 12px 16px;
         }
-        .buttons-row-3-items {
-    		display: flex;
-            gap: 15px;
+
+        .btn-main {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
         }
-        .buttons-row-3-items button {
-            width: calc(33.3% - 10px);
+
+        .btn-main:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-hover);
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+        }
+
+        .btn-wide {
+            width: 100%;
+        }
+
+        .btn-mini {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 18px;
+            font-size: 13px;
+        }
+
+        .btn-mini:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #f8f9ff;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 30px 0 10px;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .section-title::before { margin-right: 15px; }
+        .section-title::after { margin-left: 15px; }
+
+        .copy-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: -10px;
+        }
+
+        .btn-copy {
+            background-color: #34495e;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+        }
+
+        .btn-copy:hover {
+            background-color: #2c3e50;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 600px) {
+            .btn-row-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -111,33 +196,36 @@
     <div class="container">
         <h1>Очиститель HTML</h1>
 
-        <div>
-            <label for="inputHtml">Вставьте текст с HTML-тегами:</label>
-            <textarea id="inputHtml" rows="10" placeholder="Вставьте сюда ваш HTML-текст..."></textarea>
+        <label for="inputHtml">Вставьте текст с HTML-тегами:</label>
+        <textarea id="inputHtml" rows="10" placeholder="Вставьте сюда ваш HTML-текст..."></textarea>
+
+        <div class="btn-stack">
+            <button id="cleanButton" class="btn-main">Удалить все теги</button>
+            <button id="makeBeautifulBtn" class="btn-main">✨ СДЕЛАТЬ КРАСИВО (удалить всё ненужное, для чужого html)</button>
+            
+            <div class="btn-row-3">
+                <button id="cleanEmptyButton" class="btn-secondary">Удалить пустые теги</button>
+                <button id="removeScriptsBtn" class="btn-secondary">Удалить скрипты</button>
+                <button id="removeCommentsBtn" class="btn-secondary">Удалить комментарии</button>
+            </div>
+            <button id="wrapBrButton" class="btn-secondary btn-wide">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt;</button>
         </div>
 
-        <div class="buttons">
-            <button id="cleanButton">Удалить все теги</button>
-            <button id="makeBeautifulBtn" class="green">СДЕЛАТЬ КРАСИВО (удалить всё ненужное, для чужого html)</button>
-            <div class="buttons-row-3-items">
-	            <button id="cleanEmptyButton">Удалить пустые теги</button>
-				<button id="removeScriptsBtn">Удалить скрипты</button>
-				<button id="wrapBrButton">Обернуть текст, разделённый &lt;br&gt;, в &lt;p&gt;</button>
-            </div>
-            <h2>Убрать атрибуты:</h2>
-            <div class="buttons-row">
-                <button id="removeClassBtn">class</button>
-                <button id="removeIdBtn">id</button>
-                <button id="removeDataBtn">data-*</button>
-                <button id="removeStyleBtn">style</button>
-                <button id="removeEventsBtn">onclick и т. п.</button>
-            </div>
+        <div class="section-title">Убрать атрибуты</div>
+        <div class="attr-group">
+            <button id="removeClassBtn" class="btn-mini">class</button>
+            <button id="removeIdBtn" class="btn-mini">id</button>
+            <button id="removeDataBtn" class="btn-mini">data-*</button>
+            <button id="removeStyleBtn" class="btn-mini">style</button>
+            <button id="removeEventsBtn" class="btn-mini">onclick и т. п.</button>
         </div>
-            
-        <div>
+
+        <div style="margin-top: 30px;">
             <label for="outputCleaned">Результат:</label>
             <textarea id="outputCleaned" rows="10" readonly placeholder="Здесь появится очищенный текст..."></textarea>
-			<button onclick="copyToClipboard('outputCleaned', this)">Копировать</button>
+            <div class="copy-footer">
+                <button class="btn-copy" onclick="copyToClipboard('outputCleaned', this)">Копировать результат</button>
+            </div>
         </div>
     </div>
 
@@ -145,179 +233,160 @@
         const inputTextArea = document.getElementById('inputHtml');
         const outputTextArea = document.getElementById('outputCleaned');
 
+        function getSafeDOM(htmlString) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            return doc.body;
+        }
+
         function getCurrentText() {
             return outputTextArea.value.trim() !== "" ? outputTextArea.value : inputTextArea.value;
         }
-        
-        function stripHtmlAndNewlines(htmlString) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = htmlString;
-            let plainText = tempDiv.textContent || '';
-            plainText = plainText.replace(/(\r\n|\n|\r)/gm, ' ')
-                               .replace(/\s+/g, ' ')
-                               .trim();
 
-            return plainText;
+        function stripHtml(container) {
+            let text = container.textContent || "";
+            return text.replace(/(\r\n|\n|\r)/gm, ' ').replace(/\s+/g, ' ').trim();
         }
 
-        function removeEmptySpanAndP(htmlString) {
-            const regex = /<(p|span|div)[^>]*>\s*(?:&nbsp;)*\s*<\/\1>/gi;            
-            let result = htmlString;
-            let previousResult;
+        function removeScripts(container) {
+            const scripts = container.querySelectorAll('script');
+            scripts.forEach(s => s.remove());
+        }
 
+        function removeComments(container) {
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_COMMENT, null, false);
+            let node;
+            const comments = [];
+            while (node = walker.nextNode()) comments.push(node);
+            comments.forEach(c => c.remove());
+        }
+
+        function removeAttributes(container, types) {
+            const attrList = Array.isArray(types) ? types : [types];
+            const allElements = container.querySelectorAll('*');
+            
+            allElements.forEach(el => {
+                const attrs = Array.from(el.attributes);
+                attrs.forEach(attr => {
+                    const name = attr.name.toLowerCase();
+                    attrList.forEach(type => {
+                        if (type === 'data' && name.startsWith('data-')) el.removeAttribute(name);
+                        else if (type === 'events' && name.startsWith('on')) el.removeAttribute(name);
+                        else if (name === type) el.removeAttribute(name);
+                    });
+                });
+            });
+        }
+
+        function removeEmptyTags(container) {
+            let changed;
             do {
-                previousResult = result;
-                result = result.replace(regex, '');
-            } while (result !== previousResult);
-
-            return result.trim();
+                changed = false;
+                const elements = container.querySelectorAll('p, span, div');
+                elements.forEach(el => {
+                    const content = el.innerHTML.replace(/&nbsp;/g, '').trim();
+                    if (content === "") {
+                        el.remove();
+                        changed = true;
+                    }
+                });
+            } while (changed);
         }
 
-        function removeScripts(htmlString) {
-		    const regex = /<script\b[^>]*>([\s\S]*?)<\/script>/gmi;
-		    return htmlString.replace(regex, '');
-		}
-
-        function wrapBrWithP(htmlString) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = htmlString;
-        
-            const nodes = Array.from(tempDiv.childNodes);
+        function wrapBrWithP(container) {
+            const nodes = Array.from(container.childNodes);
             let buffer = [];
-        
-            const blockTags = [
-		        'DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 
-		        'UL', 'OL', 'LI', 'BLOCKQUOTE', 'SECTION', 
-		        'TABLE', 'TBODY', 'TR', 'TD', 'THEAD', 'TH', 'ARTICLE', 'ASIDE'
-		    ];
-        
+            const blockTags = ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'SECTION', 'TABLE', 'ARTICLE'];
+
             const flush = () => {
-		        if (buffer.length === 0) return;
-		        const hasActualContent = buffer.some(node => {
-		            return (node.nodeType === Node.ELEMENT_NODE) || 
-		                   (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== "");
-		        });
-		
-		        if (hasActualContent) {
-		            const p = document.createElement('p');
-		            const containsBlock = buffer.some(node => node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName));
-		            
-		            if (!containsBlock) {
-		                tempDiv.insertBefore(p, buffer[0]);
-		                buffer.forEach(node => p.appendChild(node));
-		            }
-		        }
-		        buffer = [];
-		    };
-        
+                if (buffer.length === 0) return;
+                const hasContent = buffer.some(n => n.nodeType === Node.ELEMENT_NODE || (n.nodeType === Node.TEXT_NODE && n.textContent.trim() !== ""));
+                if (hasContent) {
+                    const p = document.createElement('p');
+                    buffer[0].parentNode.insertBefore(p, buffer[0]);
+                    buffer.forEach(node => p.appendChild(node));
+                }
+                buffer = [];
+            };
+
             nodes.forEach(node => {
-		        if (node.nodeName === 'BR') {
-		            flush();
-		            node.remove();
-		        } else if (node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName)) {
-		            flush();
-		        } else {
-		            buffer.push(node);
-		        }
-		    });
-        
+                if (node.nodeName === 'BR') {
+                    flush();
+                    node.remove();
+                } else if (node.nodeType === Node.ELEMENT_NODE && blockTags.includes(node.nodeName)) {
+                    flush();
+                } else {
+                    buffer.push(node);
+                }
+            });
             flush();
-            return tempDiv.innerHTML;
         }
 
-        function removeAttributes(htmlString, types) {
-		    if (!Array.isArray(types)) types = [types];
-		    
-		    const tempDiv = document.createElement('div');
-		    tempDiv.innerHTML = htmlString;
-		    const allElements = tempDiv.querySelectorAll('*');
+        function applyChanges(actionType, params = null) {
+            const htmlString = getCurrentText();
+            const container = getSafeDOM(htmlString);
 
-		    allElements.forEach(el => {
-		        const attrs = Array.from(el.attributes);
-		        attrs.forEach(attr => {
-		            const name = attr.name;
-		            types.forEach(type => {
-		                if (type === 'data' && name.startsWith('data-')) el.removeAttribute(name);
-		                else if (type === 'events' && name.startsWith('on')) el.removeAttribute(name);
-		                else if (name === type) el.removeAttribute(name);
-		            });
-		        });
-		    });
-		    return tempDiv.innerHTML;
-		}
+            if (actionType === 'stripAll') {
+                outputTextArea.value = stripHtml(container);
+                return;
+            }
 
-		function removeComments(htmlString) {
-		    return htmlString.replace(/<!--[\s\S]*?-->/g, '');
-		}
+            switch (actionType) {
+                case 'scripts': removeScripts(container); break;
+                case 'comments': removeComments(container); break;
+                case 'empty': removeEmptyTags(container); break;
+                case 'wrapBr': wrapBrWithP(container); break;
+                case 'attributes': removeAttributes(container, params); break;
+                case 'beautiful':
+                    removeScripts(container);
+                    removeComments(container);
+                    removeAttributes(container, ['class', 'id', 'data', 'style', 'events']);
+                    wrapBrWithP(container);
+                    removeEmptyTags(container);
+                    break;
+            }
 
-		function makeBeautiful() {
-		    let text = getCurrentText();
-		    
-		    text = removeScripts(text);
-			text = removeComments(text);
-			text = removeAttributes(text, ['class', 'id', 'data', 'style', 'events']);
-			text = wrapBrWithP(text);
-		    text = removeEmptySpanAndP(text);
-		    
-		    outputTextArea.value = text;
-		}
+            outputTextArea.value = container.innerHTML.trim();
+        }
 
+        document.getElementById('cleanButton').addEventListener('click', () => applyChanges('stripAll'));
+        document.getElementById('removeScriptsBtn').addEventListener('click', () => applyChanges('scripts'));
+        document.getElementById('removeCommentsBtn').addEventListener('click', () => applyChanges('comments'));
+        document.getElementById('cleanEmptyButton').addEventListener('click', () => applyChanges('empty'));
+        document.getElementById('wrapBrButton').addEventListener('click', () => applyChanges('wrapBr'));
+        document.getElementById('makeBeautifulBtn').addEventListener('click', () => applyChanges('beautiful'));
 
-        document.getElementById('cleanButton').addEventListener('click', () => {
-		    outputTextArea.value = stripHtmlAndNewlines(inputTextArea.value);
-		});
+        const attrMap = {
+            'removeClassBtn': 'class',
+            'removeIdBtn': 'id',
+            'removeDataBtn': 'data',
+            'removeStyleBtn': 'style',
+            'removeEventsBtn': 'events'
+        };
 
-		document.getElementById('removeScriptsBtn').addEventListener('click', () => {
-		    outputTextArea.value = removeScripts(getCurrentText());
-		});
+        Object.entries(attrMap).forEach(([id, type]) => {
+            const btn = document.getElementById(id);
+            if (btn) btn.addEventListener('click', () => applyChanges('attributes', type));
+        });
 
-		document.getElementById('cleanEmptyButton').addEventListener('click', () => {
-		    outputTextArea.value = removeEmptySpanAndP(getCurrentText());
-		});
+        inputTextArea.addEventListener('input', () => {
+            outputTextArea.value = '';
+        });
 
-		document.getElementById('wrapBrButton').addEventListener('click', () => {
-		    outputTextArea.value = wrapBrWithP(getCurrentText());
-		});
-
-		document.getElementById('makeBeautifulBtn').addEventListener('click', makeBeautiful);
-
-		const attrMap = {
-		    'removeClassBtn': 'class',
-		    'removeIdBtn': 'id',
-		    'removeDataBtn': 'data',
-		    'removeStyleBtn': 'style',
-		    'removeEventsBtn': 'events'
-		};
-
-		Object.entries(attrMap).forEach(([id, type]) => {
-		    const btn = document.getElementById(id);
-		    if(btn) btn.addEventListener('click', () => {
-		        outputTextArea.value = removeAttributes(getCurrentText(), type);
-		    });
-		});
-
-		inputTextArea.addEventListener('input', () => {
-		    outputTextArea.value = '';
-		});
-
-		function copyToClipboard(elementId, btn) {
-	        const textArea = document.getElementById(elementId);
-	        
-	        navigator.clipboard.writeText(textArea.value).then(() => {
-	            const originalText = btn.innerText;
-	            btn.innerText = 'Скопировано';
-	            btn.style.backgroundColor = '#2ecc71';
-	            btn.style.color = '#fff';
-	
-	            setTimeout(() => {
-	                btn.innerText = originalText;
-	                btn.style.backgroundColor = '';
-	                btn.style.color = '';
-	            }, 2000);
-	        }).catch(err => {
-	            console.error('Ошибка при копировании: ', err);
-	        });
-	    }
+        function copyToClipboard(elementId, btn) {
+            const textArea = document.getElementById(elementId);
+            navigator.clipboard.writeText(textArea.value).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Скопировано';
+                btn.style.backgroundColor = '#2ecc71';
+                btn.style.color = '#fff';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
     </script>
 
 </body>
